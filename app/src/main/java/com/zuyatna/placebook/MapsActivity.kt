@@ -58,6 +58,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         getCurrentLocation()
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
