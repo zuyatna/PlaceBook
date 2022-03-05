@@ -112,13 +112,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun displayPoi(pointOfInterest: PointOfInterest) {
+        displayPoiGetPlaceStep(pointOfInterest)
+    }
+
+    private fun displayPoiGetPlaceStep(pointOfInterest: PointOfInterest) {
         val placeId = pointOfInterest.placeId
-        val placeFields = listOf(Place.Field.ID,
+        val placeFields = listOf(
+            Place.Field.ID,
             Place.Field.NAME,
             Place.Field.PHONE_NUMBER,
             Place.Field.PHOTO_METADATAS,
             Place.Field.ADDRESS,
-            Place.Field.LAT_LNG)
+            Place.Field.LAT_LNG
+        )
 
         val request = FetchPlaceRequest
             .builder(placeId, placeFields)
@@ -127,13 +133,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         placesClient.fetchPlace(request)
             .addOnSuccessListener { response ->
                 val place = response.place
-                Toast.makeText(this,
-                    "${place.name}, " + place.phoneNumber, Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "${place.name}, " + place.phoneNumber, Toast.LENGTH_LONG
+                ).show()
             }.addOnFailureListener { exception ->
                 if (exception is ApiException) {
                     val statusCode = exception.statusCode
-                    Log.e(TAG,
-                        "Place not found: " + exception.message + ", " + "statusCode: " + statusCode)
+                    Log.e(
+                        TAG,
+                        "Place not found: " + exception.message + ", " + "statusCode: " + statusCode
+                    )
                 }
             }
     }
