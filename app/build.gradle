@@ -5,6 +5,10 @@ plugins {
 }
 
 android {
+
+    def localProperties = new Properties()
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
     compileSdk 31
 
     defaultConfig {
@@ -18,6 +22,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            resValue("string", "google_maps_api", localProperties['MAPS_API_KEY'])
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
