@@ -140,7 +140,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }.addOnFailureListener { exception ->
                 if (exception is ApiException) {
                     val statusCode = exception.statusCode
-
                     Log.e(TAG,
                         "Place not found: " + exception.message + ", " + "statusCode: " + statusCode)
                 }
@@ -165,7 +164,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         placesClient.fetchPlace(request)
             .addOnSuccessListener { response ->
                 val place = response.place
-
                 displayPoiGetPhotoStep(place)
             }.addOnFailureListener { exception ->
                 if (exception is ApiException) {
