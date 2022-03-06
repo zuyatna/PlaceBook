@@ -3,9 +3,9 @@ package com.zuyatna.placebook
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ApiException
@@ -15,7 +15,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -121,7 +123,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .photoMetadatas?.get(0)
 
         if (photoMetaData == null) {
-            // next step here
+            displayPoiDisplayStep(place, null)
             return
         }
 
@@ -134,7 +136,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         placesClient.fetchPhoto(photoRequest)
             .addOnSuccessListener { fetchPhotoResponse ->
                 val bitmap = fetchPhotoResponse.bitmap
-                // next step here
+                displayPoiDisplayStep(place, bitmap)
             }.addOnFailureListener { exception ->
                 if (exception is ApiException) {
                     val statusCode = exception.statusCode
@@ -174,5 +176,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     )
                 }
             }
+    }
+
+    private fun displayPoiDisplayStep(place: Place, photo: Bitmap?) {
+        val iconPhoto = if (photo == null) {
+            BitmapDescriptorFactory.defaultMarker()
+        } else {
+            BitmapDescriptorFactory.fromBitmap(photo)
+        }
+
+        map.addMarker(MarkerOptions()
+            .position(place.latLng as LatLng)
+            .icon(iconPhoto)
+            .title(place.name)
+            .snippet(place.phoneNumber)
+        )
     }
 }
