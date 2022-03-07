@@ -15,7 +15,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
@@ -24,6 +23,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPhotoRequest
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.zuyatna.placebook.adapter.BookmarkInfoWindowAdapter
 import com.zuyatna.placebook.databinding.ActivityMapsBinding
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -55,6 +55,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+
+        map.setInfoWindowAdapter(BookmarkInfoWindowAdapter(this))
 
         getCurrentLocation()
         map.setOnPoiClickListener {
@@ -135,9 +137,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         placesClient.fetchPhoto(photoRequest)
             .addOnSuccessListener { fetchPhotoResponse ->
+
                 val bitmap = fetchPhotoResponse.bitmap
                 displayPoiDisplayStep(place, bitmap)
             }.addOnFailureListener { exception ->
+
                 if (exception is ApiException) {
                     val statusCode = exception.statusCode
                     Log.e(TAG,
@@ -163,9 +167,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         placesClient.fetchPlace(request)
             .addOnSuccessListener { response ->
+
                 val place = response.place
                 displayPoiGetPhotoStep(place)
             }.addOnFailureListener { exception ->
+
                 if (exception is ApiException) {
                     val statusCode = exception.statusCode
                     Log.e(
@@ -177,17 +183,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun displayPoiDisplayStep(place: Place, photo: Bitmap?) {
-        val iconPhoto = if (photo == null) {
-            BitmapDescriptorFactory.defaultMarker()
-        } else {
-            BitmapDescriptorFactory.fromBitmap(photo)
-        }
-
-        map.addMarker(MarkerOptions()
+        val marker = map.addMarker(MarkerOptions()
             .position(place.latLng as LatLng)
-            .icon(iconPhoto)
             .title(place.name)
             .snippet(place.phoneNumber)
         )
+
+        marker?.tag = photo
     }
 }
