@@ -1,4 +1,4 @@
-package com.zuyatna.placebook
+package com.zuyatna.placebook.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -23,6 +23,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPhotoRequest
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.zuyatna.placebook.R
 import com.zuyatna.placebook.adapter.BookmarkInfoWindowAdapter
 import com.zuyatna.placebook.databinding.ActivityMapsBinding
 
@@ -90,7 +91,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun requestLocationPermissions() {
         ActivityCompat.requestPermissions(this,
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION)
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION
+        )
     }
 
     @SuppressLint("MissingPermission")
@@ -144,7 +146,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 if (exception is ApiException) {
                     val statusCode = exception.statusCode
-                    Log.e(TAG,
+                    Log.e(
+                        TAG,
                         "Place not found: " + exception.message + ", " + "statusCode: " + statusCode)
                 }
             }
