@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.zuyatna.placebook.model.Bookmark
 
 @Database(entities = [Bookmark::class], version = 1)
-abstract class PlaceBookDatabase : RoomDatabase {
+abstract class PlaceBookDatabase : RoomDatabase() {
 
     abstract fun bookmarkDao(): BookmarkDao
 
