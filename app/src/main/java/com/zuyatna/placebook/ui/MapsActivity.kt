@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ApiException
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.Places
@@ -26,6 +28,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.zuyatna.placebook.R
 import com.zuyatna.placebook.adapter.BookmarkInfoWindowAdapter
 import com.zuyatna.placebook.databinding.ActivityMapsBinding
+import com.zuyatna.placebook.viewmodel.MapsViewModel
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -33,6 +36,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var binding: ActivityMapsBinding
     private lateinit var placesClient: PlacesClient
+
+    private val mapsViewModel by viewModels<MapsViewModel>()
 
     companion object {
         private const val REQUEST_LOCATION = 1
@@ -56,13 +61,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-
-        map.setInfoWindowAdapter(BookmarkInfoWindowAdapter(this))
-
+        setupMapListeners()
         getCurrentLocation()
-        map.setOnPoiClickListener {
-            displayPoi(it)
-        }
     }
 
     private fun setupPlacesClient() {
@@ -192,6 +192,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .snippet(place.phoneNumber)
         )
 
-        marker?.tag = photo
+        marker?.tag = PlaceInfo(place, photo)
     }
+
+    private fun setupMapListeners() {
+        map.setInfoWindowAdapter(BookmarkInfoWindowAdapter(this))
+        map.setOnPoiClickListener {
+            displayPoi(it)
+        }
+
+        map.setOnInfoWindowClickListener {
+            handleInfoWindowsClick(it)
+        }
+    }
+
+    private fun handleInfoWindowsClick(marker: Marker) {
+        val placeInfo = (marker.tag as PlaceInfo)
+        if (placeInfo.place != null) {
+            mapsViewModel.addBookmarkFromPlace(placeInfo.place, placeInfo.image)
+        }
+
+        marker.remove()
+    }
+
+    class PlaceInfo(val place: Place? = null, val image: Bitmap? = null)
 }
