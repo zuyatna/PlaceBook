@@ -139,15 +139,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         placesClient.fetchPhoto(photoRequest)
             .addOnSuccessListener { fetchPhotoResponse ->
-
                 val bitmap = fetchPhotoResponse.bitmap
                 displayPoiDisplayStep(place, bitmap)
             }.addOnFailureListener { exception ->
-
                 if (exception is ApiException) {
                     val statusCode = exception.statusCode
-                    Log.e(
-                        TAG,
+                    Log.e(TAG,
                         "Place not found: " + exception.message + ", " + "statusCode: " + statusCode)
                 }
             }
@@ -170,15 +167,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         placesClient.fetchPlace(request)
             .addOnSuccessListener { response ->
-
                 val place = response.place
                 displayPoiGetPhotoStep(place)
             }.addOnFailureListener { exception ->
-
                 if (exception is ApiException) {
                     val statusCode = exception.statusCode
-                    Log.e(
-                        TAG,
+                    Log.e(TAG,
                         "Place not found: " + exception.message + ", " + "statusCode: " + statusCode
                     )
                 }
@@ -197,6 +191,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setupMapListeners() {
         map.setInfoWindowAdapter(BookmarkInfoWindowAdapter(this))
+
         map.setOnPoiClickListener {
             displayPoi(it)
         }
