@@ -35,7 +35,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
         Log.i(tag, "New bookmark $newId added to the database.")
     }
 
-    fun getBookmarkMarkerView() : LiveData<List<BookmarkMarkerView>>? {
+    fun getBookmarkMarkerViews() : LiveData<List<BookmarkMarkerView>>? {
         if (bookmarks == null) {
             mapBookmarksToMarkerView()
         }
