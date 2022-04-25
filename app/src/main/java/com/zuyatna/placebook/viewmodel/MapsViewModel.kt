@@ -11,7 +11,7 @@ import com.zuyatna.placebook.repository.BookmarkRepo
 
 class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val TAG = "MapsViewModel"
+    private val tag = "MapsViewModel"
     private val bookmarkRepo: BookmarkRepo = BookmarkRepo(getApplication())
 
     fun addBookmarkFromPlace(place: Place, image: Bitmap?) {
@@ -26,6 +26,6 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
         val newId = bookmarkRepo.addBookmark(bookmark)
 
-        Log.i(TAG, "New bookmark $newId added to the database.")
+        Log.i(tag, "New bookmark $newId added to the database.")
     }
 }
