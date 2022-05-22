@@ -8,7 +8,7 @@ import com.zuyatna.placebook.databinding.ContentBookmarkInfoBinding
 import com.zuyatna.placebook.ui.MapsActivity
 import com.zuyatna.placebook.viewmodel.MapsViewModel
 
-class BookmarkInfoWindowAdapter(context: Activity) : GoogleMap.InfoWindowAdapter {
+class BookmarkInfoWindowAdapter(val context: Activity) : GoogleMap.InfoWindowAdapter {
 
     private val binding = ContentBookmarkInfoBinding.inflate(context.layoutInflater)
 
@@ -25,7 +25,7 @@ class BookmarkInfoWindowAdapter(context: Activity) : GoogleMap.InfoWindowAdapter
 
             is MapsViewModel.BookmarkMarkerView -> {
                 val bookmarkView = marker.tag as MapsViewModel.BookmarkMarkerView
-                // set imageView bitmap here
+                imageView.setImageBitmap(bookmarkView.getImage(context))
             }
         }
 

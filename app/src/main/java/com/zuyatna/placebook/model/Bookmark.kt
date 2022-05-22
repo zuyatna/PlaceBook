@@ -21,7 +21,7 @@ data class Bookmark(
     }
 
     companion object {
-        private fun generateImageFilename(id: Long): String {
+        fun generateImageFilename(id: Long): String {
             return "bookmark$id.png"
         }
     }

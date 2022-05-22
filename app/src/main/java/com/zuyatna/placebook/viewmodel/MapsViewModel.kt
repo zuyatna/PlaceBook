@@ -3,9 +3,9 @@
 package com.zuyatna.placebook.viewmodel
 
 import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
-import android.view.animation.Transformation
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.zuyatna.placebook.model.Bookmark
 import com.zuyatna.placebook.repository.BookmarkRepo
+import com.zuyatna.placebook.util.ImageUtils
 
 class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -45,7 +46,10 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun bookmarkToMarkerView(bookmark: Bookmark) = BookmarkMarkerView(
-        bookmark.id, LatLng(bookmark.latitude, bookmark.longitude)
+        bookmark.id,
+        LatLng(bookmark.latitude, bookmark.longitude),
+        bookmark.name,
+        bookmark.phone
     )
 
     private fun mapBookmarksToMarkerView() {
@@ -57,6 +61,12 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
     data class BookmarkMarkerView(
         var id: Long? = null,
-        var location: LatLng = LatLng(0.0, 0.0)
-    )
+        var location: LatLng = LatLng(0.0, 0.0),
+        var name: String = "",
+        var phone: String = ""
+    ) {
+        fun getImage(context: Context) = id?.let {
+            ImageUtils.loadBitmapFromFile(context, Bookmark.generateImageFilename(it))
+        }
+    }
 }

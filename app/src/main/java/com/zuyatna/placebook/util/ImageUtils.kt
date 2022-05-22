@@ -2,7 +2,9 @@ package com.zuyatna.placebook.util
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.FileOutputStream
 
 object ImageUtils {
@@ -14,6 +16,11 @@ object ImageUtils {
         val bytes = stream.toByteArray()
 
         saveBytesToFile(context, bytes, filename)
+    }
+
+    fun loadBitmapFromFile(context: Context, filename: String): Bitmap? {
+        val filePath = File(context.filesDir, filename).absolutePath
+        return BitmapFactory.decodeFile(filePath)
     }
 
     private fun saveBytesToFile(context: Context, bytes: ByteArray, filename: String) {
