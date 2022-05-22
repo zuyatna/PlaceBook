@@ -32,6 +32,8 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
         val newId = bookmarkRepo.addBookmark(bookmark)
 
+        image?.let { bookmark.setImage(it, getApplication()) }
+
         Log.i(tag, "New bookmark $newId added to the database.")
     }
 

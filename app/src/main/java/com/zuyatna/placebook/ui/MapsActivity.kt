@@ -189,6 +189,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         )
 
         marker?.tag = PlaceInfo(place, photo)
+        marker?.showInfoWindow()
     }
 
     private fun setupMapListeners() {
