@@ -7,11 +7,13 @@ import com.google.android.gms.maps.model.Marker
 import com.zuyatna.placebook.databinding.ContentBookmarkInfoBinding
 import com.zuyatna.placebook.ui.MapsActivity
 import com.zuyatna.placebook.viewmodel.MapsViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 class BookmarkInfoWindowAdapter(val context: Activity) : GoogleMap.InfoWindowAdapter {
 
     private val binding = ContentBookmarkInfoBinding.inflate(context.layoutInflater)
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun getInfoContents(marker: Marker): View {
         binding.title.text = marker.title ?: ""
         binding.phone.text = marker.snippet ?: ""
