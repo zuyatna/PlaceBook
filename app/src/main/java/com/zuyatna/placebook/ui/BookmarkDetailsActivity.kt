@@ -1,12 +1,13 @@
 package com.zuyatna.placebook.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.zuyatna.placebook.R
 import com.zuyatna.placebook.databinding.ActivityBookmarkDetailsBinding
 import com.zuyatna.placebook.viewmodel.BookmarkDetailsViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 class BookmarkDetailsActivity : AppCompatActivity() {
     private lateinit var dataBinding: ActivityBookmarkDetailsBinding
@@ -28,6 +29,20 @@ class BookmarkDetailsActivity : AppCompatActivity() {
             val placeImage = bookmarkView.getImage(this)
             placeImage?.let {
                 dataBinding.imageViewPlace.setImageBitmap(placeImage)
+            }
+        }
+    }
+
+    @DelicateCoroutinesApi
+    private fun getIntentData() {
+        val bookmarkId = intent.getLongExtra(MapsActivity.EXTRA_BOOKMARK_ID, 0)
+
+        bookmarkDetailsViewModel.getBookmark(bookmarkId)?.observe(this
+        ) {
+            it?.let {
+                bookmarkDetailsView = it
+                dataBinding.bookmarkDetailsView = it
+                populateImageView()
             }
         }
     }
