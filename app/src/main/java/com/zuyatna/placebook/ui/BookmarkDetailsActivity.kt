@@ -14,10 +14,12 @@ class BookmarkDetailsActivity : AppCompatActivity() {
     private val bookmarkDetailsViewModel by viewModels<BookmarkDetailsViewModel>()
     private var bookmarkDetailsView: BookmarkDetailsViewModel.BookmarkDetailsView? = null
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_bookmark_details)
         setupToolbar()
+        getIntentData()
     }
 
     private fun setupToolbar() {
