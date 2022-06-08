@@ -8,6 +8,8 @@ import androidx.lifecycle.Transformations
 import com.zuyatna.placebook.model.Bookmark
 import com.zuyatna.placebook.repository.BookmarkRepo
 import com.zuyatna.placebook.util.ImageUtils
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class BookmarkDetailsViewModel(application: Application) : AndroidViewModel(application) {
     private val bookmarkRepo = BookmarkRepo(getApplication())
@@ -34,6 +36,27 @@ class BookmarkDetailsViewModel(application: Application) : AndroidViewModel(appl
         val bookmark = bookmarkRepo.getLiveBookmark(bookmarkId)
         bookmarkDetailsView = Transformations.map(bookmark) {
             repoBookmark -> bookmarkToBookmarkView(repoBookmark)
+        }
+    }
+
+    private fun bookmarkViewToBookmark(bookmarkView: BookmarkDetailsView): Bookmark? {
+        val bookmark = bookmarkView.id?.let {
+            bookmarkRepo.getBookmark(it)
+        }
+        if (bookmark != null) {
+            bookmark.id = bookmarkView.id
+            bookmark.name = bookmarkView.name
+            bookmark.phone = bookmarkView.phone
+            bookmark.address = bookmarkView.address
+            bookmark.notes = bookmarkView.notes
+        }
+        return bookmark
+    }
+
+    fun updateBookmark(bookmarkView: BookmarkDetailsView) {
+        GlobalScope.launch {
+            val bookmark = bookmarkViewToBookmark(bookmarkView)
+            bookmark?.let { bookmarkRepo.updateBookmark(it) }
         }
     }
 

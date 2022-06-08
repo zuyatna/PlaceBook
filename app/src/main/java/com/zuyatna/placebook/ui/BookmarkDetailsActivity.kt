@@ -1,6 +1,8 @@
 package com.zuyatna.placebook.ui
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -48,4 +50,34 @@ class BookmarkDetailsActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun saveChanges() {
+        val name = dataBinding.editTextName.text.toString()
+        if (name.isEmpty()) {
+            return
+        }
+
+        bookmarkDetailsView?.let { bookmarkView ->
+            bookmarkView.name = dataBinding.editTextName.text.toString()
+            bookmarkView.notes = dataBinding.editTextNotes.text.toString()
+            bookmarkView.address = dataBinding.editTextAddress.text.toString()
+            bookmarkView.phone = dataBinding.editTextPhone.text.toString()
+            bookmarkDetailsViewModel.updateBookmark(bookmarkView)
+        }
+        finish()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_bookmark_details, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.action_save -> {
+                saveChanges()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 }
