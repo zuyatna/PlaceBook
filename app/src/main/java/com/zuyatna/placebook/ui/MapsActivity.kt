@@ -36,7 +36,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var binding: ActivityMapsBinding
+    private lateinit var databinding: ActivityMapsBinding
     private lateinit var placesClient: PlacesClient
 
     private val mapsViewModel by viewModels<MapsViewModel>()
@@ -50,8 +50,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMapsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        databinding = ActivityMapsBinding.inflate(layoutInflater)
+        setContentView(databinding.root)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -59,6 +59,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         setupLocationClient()
+        setupToolbar()
         setupPlacesClient()
     }
 
@@ -261,6 +262,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val intent = Intent(this, BookmarkDetailsActivity::class.java)
         intent.putExtra(EXTRA_BOOKMARK_ID, bookmarkId)
         startActivity(intent)
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(databinding.mainMapView.toolbar)
     }
 
     class PlaceInfo(val place: Place? = null, val image: Bitmap? = null)
