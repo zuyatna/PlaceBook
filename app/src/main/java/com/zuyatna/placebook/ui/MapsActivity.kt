@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ApiException
@@ -36,7 +37,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var databinding: ActivityMapsBinding
+    private lateinit var binding: ActivityMapsBinding
     private lateinit var placesClient: PlacesClient
 
     private val mapsViewModel by viewModels<MapsViewModel>()
@@ -50,8 +51,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        databinding = ActivityMapsBinding.inflate(layoutInflater)
-        setContentView(databinding.root)
+        binding = ActivityMapsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -265,7 +266,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setupToolbar() {
-        setSupportActionBar(databinding.mainMapView.toolbar)
+        setSupportActionBar(binding.mainMapView.toolbar)
+
+        val toggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.mainMapView.toolbar,
+            R.string.open_drawer,
+            R.string.close_drawer
+        )
+        toggle.syncState()
     }
 
     class PlaceInfo(val place: Place? = null, val image: Bitmap? = null)
