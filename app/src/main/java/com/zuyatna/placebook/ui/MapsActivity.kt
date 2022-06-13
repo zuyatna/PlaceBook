@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
@@ -44,6 +45,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var bookmarkListAdapter: BookmarkListAdapter
 
     private val mapsViewModel by viewModels<MapsViewModel>()
+    private var markers = HashMap<Long, Marker>()
 
     companion object {
         const val EXTRA_BOOKMARK_ID = "com.zuyatna.placebook.EXTRA_BOOKMARK_ID"
@@ -247,6 +249,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             marker.tag = bookmark
         }
 
+        bookmark.id?.let {
+            if (marker != null) {
+                markers[it] = marker
+            }
+        }
+
         return marker
     }
 
@@ -259,6 +267,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             this
         ) {
             map.clear()
+            markers.clear()
             it?.let {
                 displayAllBookmarks(it)
                 bookmarkListAdapter.setBookmarkData(it)
@@ -290,6 +299,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.drawerViewMaps.bookmarkRecyclerView.layoutManager = layoutManager
         bookmarkListAdapter = BookmarkListAdapter(null, this)
         binding.drawerViewMaps.bookmarkRecyclerView.adapter = bookmarkListAdapter
+    }
+
+    private fun updateMapToLocation(location: Location) {
+        val latLng = LatLng(location.latitude, location.longitude)
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f))
+    }
+
+    fun moveToBookmark(bookmark: MapsViewModel.BookmarkView) {
+        binding.drawerLayout.closeDrawer(binding.drawerViewMaps.drawerView)
+
+        val marker = markers[bookmark.id]
+        marker?.showInfoWindow()
+
+        val location = Location("")
+        location.latitude = bookmark.location.latitude
+        location.longitude = bookmark.location.longitude
+
+        updateMapToLocation(location)
     }
 
     class PlaceInfo(val place: Place? = null, val image: Bitmap? = null)
