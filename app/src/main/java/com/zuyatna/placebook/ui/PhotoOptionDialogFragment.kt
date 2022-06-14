@@ -55,10 +55,14 @@ class PhotoOptionDialogFragment : DialogFragment() {
         }
 
         fun canCapture(context: Context): Boolean {
-            // TODO: create method canCapture() that can return true or false from intent(media store capture)
-            return false
+            val captureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            return (captureIntent.resolveActivity(context.packageManager) != null)
         }
 
-        // TODO: create method newInstance() that return PhotoOptionsDialogFragment() method from statement canPick, canCapture or all its null
+        fun newInstance(context: Context) = if (canPick(context) || canCapture(context)) {
+            PhotoOptionDialogFragment()
+        } else {
+            null
+        }
     }
 }

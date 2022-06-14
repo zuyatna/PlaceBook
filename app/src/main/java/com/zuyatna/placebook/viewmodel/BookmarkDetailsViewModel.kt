@@ -8,9 +8,11 @@ import androidx.lifecycle.Transformations
 import com.zuyatna.placebook.model.Bookmark
 import com.zuyatna.placebook.repository.BookmarkRepo
 import com.zuyatna.placebook.util.ImageUtils
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+@OptIn(DelicateCoroutinesApi::class)
 class BookmarkDetailsViewModel(application: Application) : AndroidViewModel(application) {
     private val bookmarkRepo = BookmarkRepo(getApplication())
     private var bookmarkDetailsView: LiveData<BookmarkDetailsView>? = null

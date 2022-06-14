@@ -3,6 +3,7 @@ package com.zuyatna.placebook.ui
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -11,7 +12,7 @@ import com.zuyatna.placebook.databinding.ActivityBookmarkDetailsBinding
 import com.zuyatna.placebook.viewmodel.BookmarkDetailsViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 
-class BookmarkDetailsActivity : AppCompatActivity() {
+class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogFragment.PhotoOptionDialogListener {
     private lateinit var dataBinding: ActivityBookmarkDetailsBinding
     private val bookmarkDetailsViewModel by viewModels<BookmarkDetailsViewModel>()
     private var bookmarkDetailsView: BookmarkDetailsViewModel.BookmarkDetailsView? = null
@@ -34,6 +35,10 @@ class BookmarkDetailsActivity : AppCompatActivity() {
             placeImage?.let {
                 dataBinding.imageViewPlace.setImageBitmap(placeImage)
             }
+        }
+
+        dataBinding.imageViewPlace.setOnClickListener {
+            replaceImage()
         }
     }
 
@@ -67,6 +72,11 @@ class BookmarkDetailsActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun replaceImage() {
+        val newFragment = PhotoOptionDialogFragment.newInstance(this)
+        newFragment?.show(supportFragmentManager, "photoOptionDialog")
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_bookmark_details, menu)
         return true
@@ -80,4 +90,12 @@ class BookmarkDetailsActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+
+    override fun onCaptureClick() {
+        Toast.makeText(this, "Camera Capture", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPickClick() {
+        Toast.makeText(this, "Gallery Pick", Toast.LENGTH_SHORT).show()
+    }
 }
