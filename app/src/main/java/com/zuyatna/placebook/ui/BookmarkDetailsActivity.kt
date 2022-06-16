@@ -11,11 +11,13 @@ import com.zuyatna.placebook.R
 import com.zuyatna.placebook.databinding.ActivityBookmarkDetailsBinding
 import com.zuyatna.placebook.viewmodel.BookmarkDetailsViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
+import java.io.File
 
 class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogFragment.PhotoOptionDialogListener {
     private lateinit var dataBinding: ActivityBookmarkDetailsBinding
     private val bookmarkDetailsViewModel by viewModels<BookmarkDetailsViewModel>()
     private var bookmarkDetailsView: BookmarkDetailsViewModel.BookmarkDetailsView? = null
+    private var photoFile: File? = null
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
