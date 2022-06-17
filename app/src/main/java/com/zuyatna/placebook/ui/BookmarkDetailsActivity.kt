@@ -1,13 +1,11 @@
 package com.zuyatna.placebook.ui
 
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -113,7 +111,7 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogFragment.P
         }
 
         photoFile?.let { photoFile ->
-            val photoUri = FileProvider.getUriForFile(this, "com.zuyatna.PlaceBook.FileProvider", photoFile)
+            val photoUri = FileProvider.getUriForFile(this, "com.zuyatna.placebook.FileProvider", photoFile)
             val captureIntent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
             captureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, photoUri)
 
@@ -121,15 +119,15 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogFragment.P
             intentActivities.map { it.activityInfo.packageName }
                 .forEach { grantUriPermission(it, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
 
-//            startActivityForResult(captureIntent, REQUEST_CAPTURE_IMAGE)
+            startActivityForResult(captureIntent, REQUEST_CAPTURE_IMAGE)
 
-            val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                if (it.resultCode == Activity.RESULT_OK) {
-                    val value = it.data?.getStringExtra("input")
-                }
-            }
-
-            getResult.launch(captureIntent)
+//            val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+//                if (it.resultCode == Activity.RESULT_OK) {
+//                    val value = it.data?.getStringExtra("input")
+//                }
+//            }
+//
+//            getResult.launch(captureIntent)
         }
     }
 
