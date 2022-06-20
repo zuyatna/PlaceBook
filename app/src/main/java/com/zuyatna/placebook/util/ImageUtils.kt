@@ -37,6 +37,22 @@ object ImageUtils {
         return File.createTempFile(filename, ".jpg", filesDir)
     }
 
+    fun decodeFileToSize(
+        filePath: String,
+        width: Int,
+        height: Int
+    ): Bitmap {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(filePath, options)
+
+        options.inSampleSize = calculateInSampleSize(options.outWidth, options.outHeight, width, height)
+
+        options.inJustDecodeBounds = false
+
+        return BitmapFactory.decodeFile(filePath, options)
+    }
+
     private fun saveBytesToFile(context: Context, bytes: ByteArray, filename: String) {
         val outputStream: FileOutputStream
 
