@@ -3,6 +3,7 @@ package com.zuyatna.placebook.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.os.Environment
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -82,5 +83,14 @@ object ImageUtils {
         }
 
         return inSampleSize
+    }
+
+    private fun rotateImage(img: Bitmap, degree: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(degree)
+
+        val rotatedImg = Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
+        img.recycle()
+        return rotatedImg
     }
 }
