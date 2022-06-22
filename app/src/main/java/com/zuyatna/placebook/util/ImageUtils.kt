@@ -4,11 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.media.ExifInterface
+import android.net.Uri
+import android.os.Build
 import android.os.Environment
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.jvm.Throws
@@ -54,7 +54,25 @@ object ImageUtils {
         return BitmapFactory.decodeFile(filePath, options)
     }
 
-    private fun saveBytesToFile(context: Context, bytes: ByteArray, filename: String) {
+    @Throws(IOException::class)
+    fun rotateImageIfRequired(context: Context, img: Bitmap, selectedImage: Uri): Bitmap? {
+        val input: InputStream? = context.contentResolver.openInputStream(selectedImage)
+        val path = selectedImage.path
+        val ei: ExifInterface = when {
+            Build.VERSION.SDK_INT > 23 && input != null -> ExifInterface(input)
+            path != null -> ExifInterface(path)
+            else -> null
+        } ?: return img
+
+        return when (ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90.0f) ?: img
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img, 180.0f) ?: img
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(img, 270.0f) ?: img
+            else -> img
+        }
+    }
+
+            private fun saveBytesToFile(context: Context, bytes: ByteArray, filename: String) {
         val outputStream: FileOutputStream
 
         try {
