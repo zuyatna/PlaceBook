@@ -95,6 +95,32 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogFragment.P
         }
     }
 
+    private fun getImageWithPath(filePath: String) = ImageUtils.decodeFileToSize(
+        filePath,
+        resources.getDimensionPixelSize(R.dimen.default_image_width),
+        resources.getDimensionPixelSize(R.dimen.default_image_height)
+    )
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode ==  android.app.Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CAPTURE_IMAGE -> {
+                    val photoFile = photoFile ?: return
+                    val uri = FileProvider.getUriForFile(this, "com.zuyatna.placebook.FileProvider", photoFile)
+
+                    revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+
+                    val image = getImageWithPath(photoFile.absolutePath)
+                    val bitmap = ImageUtils.rotateImageIfRequired(this, image, uri)
+                    if (bitmap != null) {
+                        updateImage(bitmap)
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_bookmark_details, menu)
         return true
