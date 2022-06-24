@@ -2,6 +2,7 @@ package com.zuyatna.placebook.ui
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -85,6 +86,13 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogFragment.P
     private fun replaceImage() {
         val newFragment = PhotoOptionDialogFragment.newInstance(this)
         newFragment?.show(supportFragmentManager, "photoOptionDialog")
+    }
+
+    private fun updateImage(image: Bitmap) {
+        bookmarkDetailsView?.let {
+            dataBinding.imageViewPlace.setImageBitmap(image)
+            it.setImage(this, image)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
