@@ -54,6 +54,45 @@ object ImageUtils {
         return BitmapFactory.decodeFile(filePath, options)
     }
 
+    fun decodeUriStreamToSize(
+        uri: Uri,
+        width: Int,
+        height: Int,
+        context: Context
+    ): Bitmap? {
+        var inputStream: InputStream? = null
+        try {
+            val options: BitmapFactory.Options
+            inputStream = context.contentResolver.openInputStream(uri)
+            if (inputStream != null) {
+                options = BitmapFactory.Options()
+                options.inJustDecodeBounds = false
+                BitmapFactory.decodeStream(inputStream, null, options)
+
+                inputStream.close()
+                inputStream = context.contentResolver.openInputStream(uri)
+                if (inputStream != null) {
+                    options.inSampleSize = calculateInSampleSize(
+                        options.outWidth,
+                        options.outHeight,
+                        width,
+                        height
+                    )
+                    options.inJustDecodeBounds = false
+
+                    val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
+                    inputStream.close()
+                    return bitmap
+                }
+            }
+            return null
+        } catch (e: Exception) {
+            return null
+        } finally {
+            inputStream?.close()
+        }
+    }
+
     @Throws(IOException::class)
     fun rotateImageIfRequired(context: Context, img: Bitmap, selectedImage: Uri): Bitmap? {
         val input: InputStream? = context.contentResolver.openInputStream(selectedImage)

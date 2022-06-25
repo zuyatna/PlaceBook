@@ -3,10 +3,11 @@ package com.zuyatna.placebook.ui
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -26,6 +27,7 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogFragment.P
 
     companion object {
         private const val REQUEST_CAPTURE_IMAGE = 1
+        private const val REQUEST_GALLERY_IMAGE = 2
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -101,6 +103,13 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogFragment.P
         resources.getDimensionPixelSize(R.dimen.default_image_height)
     )
 
+    private fun getImageWithAuthority(uri: Uri) = ImageUtils.decodeUriStreamToSize(
+        uri,
+        resources.getDimensionPixelSize(R.dimen.default_image_width),
+        resources.getDimensionPixelSize(R.dimen.default_image_height),
+        this
+    )
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode ==  android.app.Activity.RESULT_OK) {
@@ -115,6 +124,16 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogFragment.P
                     val bitmap = ImageUtils.rotateImageIfRequired(this, image, uri)
                     if (bitmap != null) {
                         updateImage(bitmap)
+                    }
+                }
+                REQUEST_GALLERY_IMAGE -> if (data != null && data.data != null) {
+                    val imageUri = data.data as Uri
+                    val image = getImageWithAuthority(imageUri)
+                    image?.let {
+                        val bitmap = ImageUtils.rotateImageIfRequired(this, it, imageUri)
+                        if (bitmap != null) {
+                            updateImage(bitmap)
+                        }
                     }
                 }
             }
@@ -146,26 +165,19 @@ class BookmarkDetailsActivity : AppCompatActivity(), PhotoOptionDialogFragment.P
 
         photoFile?.let { photoFile ->
             val photoUri = FileProvider.getUriForFile(this, "com.zuyatna.placebook.FileProvider", photoFile)
-            val captureIntent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-            captureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, photoUri)
+            val captureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
 
             val intentActivities = packageManager.queryIntentActivities(captureIntent, PackageManager.MATCH_DEFAULT_ONLY)
             intentActivities.map { it.activityInfo.packageName }
                 .forEach { grantUriPermission(it, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
 
             startActivityForResult(captureIntent, REQUEST_CAPTURE_IMAGE)
-
-//            val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-//                if (it.resultCode == Activity.RESULT_OK) {
-//                    val value = it.data?.getStringExtra("input")
-//                }
-//            }
-//
-//            getResult.launch(captureIntent)
         }
     }
 
     override fun onPickClick() {
-        Toast.makeText(this, "Gallery Pick", Toast.LENGTH_SHORT).show()
+        val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(pickIntent, REQUEST_GALLERY_IMAGE)
     }
 }
